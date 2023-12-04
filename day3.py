@@ -1,7 +1,54 @@
-def find_coords_of_symbols():
-    coords = []
+def add_hit(x, y, coords, matrix, seen):
+    total = 0
+    if seen[y][x]:
+        return 0
+    if seen[y][x+1]:
+        return 0
+    if seen[y][x-1]:
+        return 0
 
-    return coords
+    total += coords.get((x, y), 0)
+    return total
+
+
+def hits(x, y, matrix, seen, numbers):
+    total = 0
+    if x-1 >= 0:
+        if matrix[y][x-1].isdigit():
+            total += add_hit(x-1, y, numbers, matrix, seen)
+            seen[y][x-1] = True
+    if x+1 < len(matrix[0]):
+        if matrix[y][x+1].isdigit():
+            total += add_hit(x+1, y, numbers, matrix, seen)
+            seen[y][x+1] = True
+    if y+1 < len(matrix):
+        if matrix[y+1][x].isdigit():
+            total += add_hit(x, y+1, numbers, matrix, seen)
+            seen[y+1][x] = True
+    if y-1 >= 0:
+        if matrix[y-1][x].isdigit():
+            total += add_hit(x, y-1, numbers, matrix, seen)
+            seen[y-1][x] = True
+    if x-1 >= 0 and y-1 >= 0:
+        if matrix[y-1][x-1].isdigit():
+            total += add_hit(x-1, y-1, numbers, matrix, seen)
+            seen[y-1][x-1] = True
+    if x+1 < len(matrix[0]) and y+1 < len(matrix):
+        if matrix[y+1][x+1].isdigit():
+            total += add_hit(x+1, y+1, numbers, matrix, seen)
+            seen[y+1][x+1] = True
+    if x - 1 >= 0 and y+1 < len(matrix):
+        if matrix[y+1][x-1].isdigit():
+            total += add_hit(x-1, y+1, numbers, matrix, seen)
+            seen[y+1][x-1] = True
+    if x+1 < len(matrix[0]) and y - 1 >= 0:
+        if matrix[y-1][x+1].isdigit():
+            total += add_hit(x+1, y-1, numbers, matrix, seen)
+            seen[y-1][x+1] = True
+
+    print(x, y, total)
+    return total
+
 
 def find_numbers_coords(lines):
     """
@@ -25,14 +72,28 @@ def find_numbers_coords(lines):
                 digits = ""
             i += 1
 
+        while indicies_seen_digit:
+            ix = indicies_seen_digit.pop()
+            coords[(ix, iy)] = int(digits)
+
     return coords
 
 
 if __name__ == '__main__':
-    with open('day3.txt') as f:
+    with open('day33.txt') as f:
+        seen = []
         matrix = []
         for line in f:
+            seen.append([False]*len(line))
             matrix.append(list(line.strip()))
-        print(matrix)
-        numbers = find_numbers_coords([['4', '6', '7', '.', '.', '1', '1', '4', '.', '.']])
-        print(numbers)
+
+    numbers = find_numbers_coords(matrix)
+
+    total = 0
+    for y, line in enumerate(matrix):
+        print(list(line))
+        for x, char in enumerate(line):
+            if not char.isdigit() and char != '.':
+                total += hits(x, y, matrix, seen, numbers)
+
+    print(total)
