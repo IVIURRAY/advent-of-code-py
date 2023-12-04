@@ -12,40 +12,42 @@ def add_hit(x, y, coords, matrix, seen):
 
 
 def hits(x, y, matrix, seen, numbers):
-    total = 0
+    total = []
     if x-1 >= 0:
         if matrix[y][x-1].isdigit():
-            total += add_hit(x-1, y, numbers, matrix, seen)
+            total.append(add_hit(x-1, y, numbers, matrix, seen))
             seen[y][x-1] = True
     if x+1 < len(matrix[0]):
         if matrix[y][x+1].isdigit():
-            total += add_hit(x+1, y, numbers, matrix, seen)
+            total.append(add_hit(x+1, y, numbers, matrix, seen))
             seen[y][x+1] = True
     if y+1 < len(matrix):
         if matrix[y+1][x].isdigit():
-            total += add_hit(x, y+1, numbers, matrix, seen)
+            total.append(add_hit(x, y+1, numbers, matrix, seen))
             seen[y+1][x] = True
     if y-1 >= 0:
         if matrix[y-1][x].isdigit():
-            total += add_hit(x, y-1, numbers, matrix, seen)
+            total.append(add_hit(x, y-1, numbers, matrix, seen))
             seen[y-1][x] = True
     if x-1 >= 0 and y-1 >= 0:
         if matrix[y-1][x-1].isdigit():
-            total += add_hit(x-1, y-1, numbers, matrix, seen)
+            total.append(add_hit(x-1, y-1, numbers, matrix, seen))
             seen[y-1][x-1] = True
     if x+1 < len(matrix[0]) and y+1 < len(matrix):
         if matrix[y+1][x+1].isdigit():
-            total += add_hit(x+1, y+1, numbers, matrix, seen)
+            total.append(add_hit(x+1, y+1, numbers, matrix, seen))
             seen[y+1][x+1] = True
     if x - 1 >= 0 and y+1 < len(matrix):
         if matrix[y+1][x-1].isdigit():
-            total += add_hit(x-1, y+1, numbers, matrix, seen)
+            total.append(add_hit(x-1, y+1, numbers, matrix, seen))
             seen[y+1][x-1] = True
     if x+1 < len(matrix[0]) and y - 1 >= 0:
         if matrix[y-1][x+1].isdigit():
-            total += add_hit(x+1, y-1, numbers, matrix, seen)
+            total.append(add_hit(x+1, y-1, numbers, matrix, seen))
             seen[y-1][x+1] = True
 
+    total = [t for t in total if t]
+    total = total[0] * total[1] if len(total) == 2 else 0
     print(x, y, total)
     return total
 
